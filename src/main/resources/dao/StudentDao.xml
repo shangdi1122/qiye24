@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="qiye.dao.StudentDao">
+    <insert id="addStudent" parameterType="Student">
+        insert into student (grade_id, student_name, gender, age, student_num) values (#{grade.id},#{studentName},#{gender},#{age},#{studentNum})
+    </insert>
+    <update id="updateStudent">
+        update student set student_name = #{studentName},gender=#{gender},age=#{age},student_num=#{studentNum},grade_id=#{grade.id}
+        where id=#{id}
+    </update>
+    <delete id="deleteStudent">
+          DELETE  FROM student where id=#{id}
+    </delete>
+    <delete id="deleteSomeStudent">
+          DELETE FROM student where id IN
+          <foreach collection="list" item="is" open="(" close=")" separator=",">
+              #{is}
+          </foreach>
+    </delete>
+    <select id="queryAllStudents" resultMap="studentMap">
+SELECT
+s.*,g.`grade_name`
+FROM
+student s,grade g
+WHERE
+s.`grade_id`=g.`id`
+    </select>
+    <resultMap id="studentMap" type="Student" autoMapping="true">
+        <id property="id" column="id"/>
+        <result property="studentNum" column="student_num"/>
+        <result property="studentName" column="student_name"/>
+        <association property="grade" resultMap="gradeMap"/>
+    </resultMap>
+    <resultMap id="gradeMap" type="Grade" autoMapping="true">
+        <id property="id" column="id"/>
+        <result property="gradeName" column="grade_name"/>
+        <result property="createDate" column="createDate"/>
+    </resultMap>
+    <select id="queryStudentById" resultMap="studentMap" parameterType="integer">
+SELECT s.*,g.`grade_name`
+FROM
+student s,grade g
+WHERE
+s.`grade_id`=g.`id`
+AND
+s.id=#{id}
+    </select>
+    <select id="queryStudentByGradeId" resultMap="studentMap" parameterType="integer">
+SELECT
+s.*,g.`grade_name`
+FROM
+student s,grade g
+WHERE
+s.`grade_id`=g.`id`
+AND
+s.grade_id=#{gradeId}
+    </select>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="qiye.dao.RoleMenuDao">
+    <select id="queryMenuByRoleId" resultMap="menuMap">
+SELECT
+tm.`id`,tm.`menu_url`,tm.`menu_name`
+FROM
+tmenu tm,role_menu rm
+WHERE tm.`id`=rm.`menu_id`
+AND rm.`role_id`=#{roleId}
+AND tm.`parent_id`=#{parentId}
+    </select>
+    
+    <resultMap id="roleMap" type="qiye.entity.Role">
+        <id property="id" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+    </resultMap>
+    
+    <resultMap id="menuMap" type="qiye.entity.Menu">
+        <id property="id" column="menu_id"/>
+        <result property="menuUrl" column="menu_url"/>
+        <result property="text" column="menu_name"/>
+        <result property="parentId" column="parent_id"/>
+    </resultMap>
+    
+    <resultMap id="roleMenuMap" type="qiye.entity.RoleMenu">
+        <id property="id" column="id"/>
+        <association property="menu" resultMap="menuMap"/>
+        <association property="role" resultMap="roleMap"/>
+    </resultMap>
+</mapper>
